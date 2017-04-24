@@ -28,7 +28,7 @@ jobs:
       - deploy-kubernetes-multi-container
     steps:
       - IN: deploy-kubernetes-multi-container-manifest-1
-      - IN: deploy-kubernetes-multi-container-kubernetes-cluster
+      - IN: mc-kube-cluster
 
 
   ########################################
@@ -56,7 +56,7 @@ jobs:
     steps:
       - IN: deploy-kubernetes-multi-container-manifest-2a
       - IN: deploy-kubernetes-multi-container-manifest-2b
-      - IN: deploy-kubernetes-multi-container-kubernetes-cluster
+      - IN: mc-kube-cluster
       - TASK: managed
         deployOptions:
           - parallel
@@ -85,7 +85,7 @@ jobs:
       - deploy-kubernetes-multi-container
     steps:
       - IN: deploy-kubernetes-multi-container-manifest-3a
-      - IN: deploy-kubernetes-multi-container-kubernetes-cluster
+      - IN: mc-kube-cluster
 
   - name: deploy-kubernetes-multi-container-deploy-3b
     type: deploy
@@ -93,4 +93,4 @@ jobs:
       - deploy-kubernetes-multi-container
     steps:
       - IN: deploy-kubernetes-multi-container-manifest-3b
-      - IN: deploy-kubernetes-multi-container-kubernetes-cluster
+      - IN: mc-kube-cluster

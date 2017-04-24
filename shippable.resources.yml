@@ -21,7 +21,7 @@ resources:
       - deploy-kubernetes-multi-container
 
 #kubernetes cluster
-  - name: deploy-mc-kube-cluster
+  - name: mc-kube-cluster
     type: cluster
     integration: dr-kube-cluster    #replace with your Kubernetes integration name
     flags:
