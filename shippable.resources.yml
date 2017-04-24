@@ -6,7 +6,7 @@ resources:
       sourceName: "docker.io/devopsrecipes/deploy-kubernetes-multi-container"  #replace with your image name on Docker Hub
       isPull: false
     seed:
-      versionName: "master.1"  #replace with your image tag on Docker Hub
+      versionName: "master.3"  #replace with your image tag on Docker Hub
     flags:
       - deploy-kubernetes-multi-container
 
