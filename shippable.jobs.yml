@@ -22,7 +22,7 @@ jobs:
      - IN: deploy-kubernetes-multi-container-image
      - IN: deploy-kubernetes-multi-container-nginx-image
 
-  - name: deploy-kubernetes-multi-container-deploy-1
+  - name: dkmc-deploy-1
     type: deploy
     flags:
       - deploy-kubernetes-multi-container
@@ -49,7 +49,7 @@ jobs:
     steps:
       - IN: deploy-kubernetes-multi-container-nginx-image
 
-  - name: deploy-kubernetes-multi-container-deploy
+  - name: dkmc-deploy-2
     type: deploy
     flags:
       - deploy-kubernetes-multi-container
@@ -79,7 +79,7 @@ jobs:
     steps:
       - IN: deploy-kubernetes-multi-container-nginx-image
 
-  - name: deploy-kubernetes-multi-container-deploy-3a
+  - name: dkmc-deploy-3a
     type: deploy
     flags:
       - deploy-kubernetes-multi-container
@@ -87,7 +87,7 @@ jobs:
       - IN: deploy-kubernetes-multi-container-manifest-3a
       - IN: mc-kube-cluster
 
-  - name: deploy-kubernetes-multi-container-deploy-3b
+  - name: dkmc-deploy-3b
     type: deploy
     flags:
       - deploy-kubernetes-multi-container
