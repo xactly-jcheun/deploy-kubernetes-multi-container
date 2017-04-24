@@ -1,26 +1,96 @@
 jobs:
 
-  - name: deploy-kubernetes-basic_runCI
+  ###################################
+  # runCI job to update the image tag
+  ###################################
+  - name: deploy-kubernetes-multi-container_runCI
     type: runCI
+    flags:
+      - deploy-kubernetes-multi-container
     steps:
-      - OUT: deploy-kubernetes-basic-img
+      - OUT: deploy-kubernetes-multi-container-image
 
-  - name: deploy-kubernetes-basic-manifest
+  ######################################
+  # Two images, one manifest, one deploy
+  ######################################
+
+  - name: deploy-kubernetes-multi-container-manifest-1
     type: manifest
-    steps:
-      - IN: deploy-kubernetes-basic-img
-      - IN: deploy-kubernetes-basic-img-options
-      - TASK: managed
     flags:
-      - deploy-kubernetes-basic
+      - deploy-kubernetes-multi-container
+    steps:
+     - IN: deploy-kubernetes-multi-container-image
+     - IN: deploy-kubernetes-multi-container-nginx-image
 
-#kubernetes deploy job
-  - name: kube-deploy
+  - name: deploy-kubernetes-multi-container-deploy-1
     type: deploy
-    steps:
-      - IN: deploy-kubernetes-basic-manifest
-      - IN: deploy-kubernetes-basic-kube-cluster
-      - TASK: managed
-        deployMethod: upgrade
     flags:
-      - deploy-kubernetes-basic
+      - deploy-kubernetes-multi-container
+    steps:
+      - IN: deploy-kubernetes-multi-container-manifest-1
+      - IN: deploy-kubernetes-multi-container-kubernetes-cluster
+
+
+  ########################################
+  # Two images, two manifests, one deploy
+  ########################################
+
+  - name: deploy-kubernetes-multi-container-manifest-2a
+    type: manifest
+    flags:
+      - deploy-kubernetes-multi-container
+    steps:
+     - IN: deploy-kubernetes-multi-container-image
+
+  - name: deploy-kubernetes-multi-container-manifest-2b
+    type: manifest
+    flags:
+      - deploy-kubernetes-multi-container
+    steps:
+      - IN: deploy-kubernetes-multi-container-nginx-image
+
+  - name: deploy-kubernetes-multi-container-deploy
+    type: deploy
+    flags:
+      - deploy-kubernetes-multi-container
+    steps:
+      - IN: deploy-kubernetes-multi-container-manifest-2a
+      - IN: deploy-kubernetes-multi-container-manifest-2b
+      - IN: deploy-kubernetes-multi-container-kubernetes-cluster
+      - TASK: managed
+        deployOptions:
+          - parallel
+
+  ########################################
+  # Two images, two manifests, two deploys
+  ########################################
+
+  - name: deploy-kubernetes-multi-container-manifest-3a
+    type: manifest
+    flags:
+      - deploy-kubernetes-multi-container
+    steps:
+     - IN: deploy-kubernetes-multi-container-image
+
+  - name: deploy-kubernetes-multi-container-manifest-3b
+    type: manifest
+    flags:
+      - deploy-kubernetes-multi-container
+    steps:
+      - IN: deploy-kubernetes-multi-container-nginx-image
+
+  - name: deploy-kubernetes-multi-container-deploy-3a
+    type: deploy
+    flags:
+      - deploy-kubernetes-multi-container
+    steps:
+      - IN: deploy-kubernetes-multi-container-manifest-3a
+      - IN: deploy-kubernetes-multi-container-kubernetes-cluster
+
+  - name: deploy-kubernetes-multi-container-deploy-3b
+    type: deploy
+    flags:
+      - deploy-kubernetes-multi-container
+    steps:
+      - IN: deploy-kubernetes-multi-container-manifest-3b
+      - IN: deploy-kubernetes-multi-container-kubernetes-cluster
