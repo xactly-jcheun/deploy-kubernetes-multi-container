@@ -45,3 +45,127 @@ integrations:
   hub:
     - integrationName: dr-dockerhub
       type: dockerRegistryLogin
+
+resources:
+  - name: deploy-kubernetes-multi-container-image
+    type: image
+    integration: dr-dockerhub    #replace with your Docker Hub integration name
+    pointer:
+      sourceName: "docker.io/devopsrecipes/deploy-kubernetes-multi-container"  #replace with your image name on Docker Hub
+      isPull: false
+    seed:
+      versionName: "master.5"  #replace with your image tag on Docker Hub
+    flags:
+      - deploy-kubernetes-multi-container
+
+  - name: deploy-kubernetes-multi-container-nginx-image
+    type: image
+    integration: dr-ecr
+    pointer:
+      sourceName: "679404489841.dkr.ecr.us-east-1.amazonaws.com/nginx"
+    seed:
+      versionName: "1.12.0"
+    flags:
+      - deploy-kubernetes-multi-container
+
+#kubernetes cluster
+  - name: mc-kube-cluster
+    type: cluster
+    integration: dr-kube-cluster    #replace with your Kubernetes integration name
+    flags:
+      - deploy-kubernetes-multi-container
+
+jobs:
+
+  ###################################
+  # runCI job to update the image tag
+  ###################################
+  - name: deploy-kubernetes-multi-container_runCI
+    type: runCI
+    flags:
+      - deploy-kubernetes-multi-container
+    steps:
+      - OUT: deploy-kubernetes-multi-container-image
+
+  ######################################
+  # Two images, one manifest, one deploy
+  ######################################
+
+  - name: deploy-kubernetes-multi-container-manifest-1
+    type: manifest
+    flags:
+      - deploy-kubernetes-multi-container
+    steps:
+     - IN: deploy-kubernetes-multi-container-image
+     - IN: deploy-kubernetes-multi-container-nginx-image
+
+  - name: dkmc-deploy-1
+    type: deploy
+    flags:
+      - deploy-kubernetes-multi-container
+    steps:
+      - IN: deploy-kubernetes-multi-container-manifest-1
+      - IN: mc-kube-cluster
+
+
+  ########################################
+  # Two images, two manifests, one deploy
+  ########################################
+
+  - name: deploy-kubernetes-multi-container-manifest-2a
+    type: manifest
+    flags:
+      - deploy-kubernetes-multi-container
+    steps:
+     - IN: deploy-kubernetes-multi-container-image
+
+  - name: deploy-kubernetes-multi-container-manifest-2b
+    type: manifest
+    flags:
+      - deploy-kubernetes-multi-container
+    steps:
+      - IN: deploy-kubernetes-multi-container-nginx-image
+
+  - name: dkmc-deploy-2
+    type: deploy
+    workflow: parallel
+    flags:
+      - deploy-kubernetes-multi-container
+    steps:
+      - IN: deploy-kubernetes-multi-container-manifest-2a
+      - IN: deploy-kubernetes-multi-container-manifest-2b
+      - IN: mc-kube-cluster
+
+  ########################################
+  # Two images, two manifests, two deploys
+  ########################################
+
+  - name: deploy-kubernetes-multi-container-manifest-3a
+    type: manifest
+    flags:
+      - deploy-kubernetes-multi-container
+    steps:
+     - IN: deploy-kubernetes-multi-container-image
+
+  - name: deploy-kubernetes-multi-container-manifest-3b
+    type: manifest
+    flags:
+      - deploy-kubernetes-multi-container
+    steps:
+      - IN: deploy-kubernetes-multi-container-nginx-image
+
+  - name: dkmc-deploy-3a
+    type: deploy
+    flags:
+      - deploy-kubernetes-multi-container
+    steps:
+      - IN: deploy-kubernetes-multi-container-manifest-3a
+      - IN: mc-kube-cluster
+
+  - name: dkmc-deploy-3b
+    type: deploy
+    flags:
+      - deploy-kubernetes-multi-container
+    steps:
+      - IN: deploy-kubernetes-multi-container-manifest-3b
+      - IN: mc-kube-cluster
