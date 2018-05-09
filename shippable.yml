@@ -15,8 +15,8 @@ env:
     - CODE_COVERAGE_DIR=$SHIPPABLE_REPO_DIR/shippable/codecoverage
     - TESTS_LOC_DIR=$SHIPPABLE_REPO_DIR/tests
     - MOD_LOC=$SHIPPABLE_REPO_DIR/node_modules/.bin/
-    - DOCKER_REPO=deploy-kubernetes-multi-container
-    - DOCKER_ACC=devopsrecipes # {account name}
+    - DOCKER_REPO=shippable
+    - DOCKER_ACC=jcheun # {account name}
 
 build:
 
