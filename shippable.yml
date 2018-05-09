@@ -71,7 +71,7 @@ resources:
 #kubernetes cluster
   - name: mc-kube-cluster
     type: cluster
-    integration: dr-kube-cluster    #replace with your Kubernetes integration name
+    integration: us-west1    #replace with your Kubernetes integration name
     flags:
       - deploy-kubernetes-multi-container
 
